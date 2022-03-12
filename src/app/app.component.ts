@@ -20,7 +20,6 @@ export class AppComponent {
       terms: ['', [Validators.required, Validators.requiredTrue]],
     });
 
-
     this.loadApi();
 
   }
