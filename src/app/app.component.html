@@ -1,5 +1,5 @@
 <div>
-  <form [formGroup]="formLogin" (submit)="send()">
+  <form [formGroup]="formLogin" (submit)="send()" errorTailor>
     <!-- *********** INPUT EMAIL *********** -->
     <div>
       <label for="email">Email</label>
@@ -7,14 +7,44 @@
     </div>
 
     <!-- *********** INPUT PASSWORD *********** -->
-
+    <hr />
     <div>
       <label for="password">Password</label>
-      <input type="password" id="password" formControlName="password" />
+      <input type="password" id="password" formControlName="password" [controlErrorsTpl]="messagePasswordError" />
+    </div>
+
+
+    <!-- *********** INPUT SELECT *********** -->
+    <hr />
+    <div>
+      <label for="select">Tipo de vehiculo</label>
+      <select (change)="changeType()" formControlName="type" name="select" id="select">
+        <option value="moto">Moto</option>
+        <option value="carro">Carro</option>
+        <option value="ninguno">Ninguno</option>
+      </select>
+    </div>
+
+    <!-- *********** INPUT COLOR *********** -->
+    <hr />
+    <div *ngIf="formLogin.value?.type === 'carro'">
+      <label for="color">Color</label>
+      <input type="text" id="color" formControlName="color" />
+
+    </div>
+
+    <!-- *********** INPUT GITHUB *********** -->
+    <hr />
+    <div>
+      <label for="youtube">Youtube</label>
+      <input type="text" id="youtube" formControlName="youtube" [controlErrorsTpl]="messageYoutubeError" />
+      <ng-container *ngTemplateOutlet="messageYoutubeError;context:{error:formLogin.get('youtube')?.errors}">
+
+      </ng-container>
     </div>
 
     <!-- *********** INPUT TERMS *********** -->
-
+    <hr />
     <div>
       <label for="terms">Terms</label>
       <input type="checkbox" id="terms" formControlName="terms" />
@@ -27,5 +57,21 @@
     </div>
   </form>
 </div>
+
+<ng-template let-error let-text="text" #messagePasswordError>
+  <b>Error:</b>
+  <div *ngIf="error?.minlength">
+    <i>No cumples con los caracteres minimos, ingresaste solo: {{ error?.minlength?.actualLength }} mínimo
+      ({{error?.minlength?.requiredLength}}) caracteres</i>
+  </div>
+</ng-template>
+
+<ng-template let-error="error" #messageYoutubeError>
+  <div *ngIf="error?.pattern?.requiredPattern">
+    <b>No es una url valida</b>
+  </div>
+</ng-template>
+
+<ng-template let-error let-text="text" #mensajeError>{{ error | json }} {{ text }}</ng-template>
 
 <div>Valido: {{ formLogin.valid | json }}</div>

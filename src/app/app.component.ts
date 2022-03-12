@@ -17,11 +17,21 @@ export class AppComponent {
     this.formLogin = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
+      youtube: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(
+            '^(https?\\:\\/\\/)?(www\\.youtube\\.com|youtu\\.?be)\\/.+$'
+          ),
+        ],
+      ],
+      type: [''],
+      color: [''],
       terms: ['', [Validators.required, Validators.requiredTrue]],
     });
 
-    this.loadApi();
-
+    // this.loadApi();
   }
 
   loadApi(): any {
@@ -36,6 +46,16 @@ export class AppComponent {
       password: response.password,
       terms: response.terms,
     });
+  }
+
+  changeType() {
+    if (this.formLogin.value.type === 'carro') {
+      this.formLogin.get('color')?.setValidators([Validators.required]);
+      this.formLogin.get('color')?.updateValueAndValidity();
+    } else {
+      this.formLogin.get('color')?.clearValidators();
+      this.formLogin.get('color')?.updateValueAndValidity();
+    }
   }
 
   send() {
